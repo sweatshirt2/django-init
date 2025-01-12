@@ -1,0 +1,8 @@
+# dependencies
+.venv
+
+# cached modules
+__pycache__
+
+# environment variables
+.env
