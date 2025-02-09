@@ -6,11 +6,16 @@ from django.db.models import (
     ForeignKey,
     CASCADE,
 )
+from django.utils.timezone import now
+from datetime import timedelta
 
 
 class Question(Model):
     question_text = CharField(max_length=200)
     pub_date = DateTimeField("date published")
+
+    def was_published_recently(self):
+        return now() - timedelta(days=1) <= self.pub_date
 
     def __str__(self):
         return self.question_text
