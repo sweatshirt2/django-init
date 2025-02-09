@@ -15,7 +15,7 @@ class Question(Model):
     pub_date = DateTimeField("date published")
 
     def was_published_recently(self):
-        return now() - timedelta(days=1) <= self.pub_date
+        return now() - timedelta(days=1) <= self.pub_date <= now()
 
     def __str__(self):
         return self.question_text
