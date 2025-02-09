@@ -4,6 +4,7 @@ from django.template import loader
 from django.urls import reverse
 from django.shortcuts import get_object_or_404, render
 from django.views import generic
+from django.utils.timezone import now
 
 from .models import Question, Choice
 
@@ -97,10 +98,10 @@ def vote(request, question_id):
 
 class IndexView(generic.ListView):
     template_name = "polls/index.html"
-    context_object_name = "latest_question_list"
+    context_object_name = "latest_questions_list"
 
     def get_queryset(self):
-        return Question.objects.order_by("-pub_date")[:10]
+        return Question.objects.filter(pub_date__lte=now()).order_by("-pub_date")[:10]
 
 
 class ShowView(generic.DetailView):
