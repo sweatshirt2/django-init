@@ -105,10 +105,16 @@ class IndexView(generic.ListView):
 
 
 class ShowView(generic.DetailView):
-    model = Question
+    # model = Question
     template_name = "polls/show.html"
+
+    def get_queryset(self):
+        return Question.objects.filter(pub_date__lte=now())
 
 
 class ResultsView(generic.DetailView):
-    model = Question
+    # model = Question
     template_name = "polls/results.html"
+
+    def get_queryset(self):
+        return Question.objects.filter(pub_date__lte=now())

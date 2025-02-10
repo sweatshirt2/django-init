@@ -68,3 +68,44 @@ class QuestionIndexViewTests(TestCase):
             response.context["latest_questions_list"],
             [question2, question1],
         )
+
+
+class QuestionShowViewTests(TestCase):
+    def test_future_question(self):
+        future_question = create_question(question_text="Future question", days=5)
+        url = reverse("polls:show", args=(future_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_past_question(self):
+        past_question = create_question(question_text="Past question", days=-5)
+        url = reverse("polls:show", args=(past_question.id,))
+        response = self.client.get(url)
+        # self.assertEqual(response.status_code, 200)
+        self.assertContains(response, past_question.question_text)
+
+
+class QuestionResultsViewTests(TestCase):
+    def test_future_question(self):
+        future_question = create_question(question_text="Future question", days=5)
+        url = reverse("polls:results", args=(future_question.id,))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+    def test_question_with_no_result(self):
+        no_result_question = create_question(
+            question_text="No result question", days=-1
+        )
+        url = reverse("polls:results", args=(no_result_question.id,))
+        response = self.client.get(url)
+        self.assertContains(response, "No vote")
+
+    def test_question_with_result(self):
+        result_question = create_question(question_text="Result question", days=-1)
+        # Todo: vote for the question here
+        url = reverse("polls:results", args=(result_question.id,))
+        response = self.client.get(url)
+        self.assertNotContains(response, "No vote")
+
+
+# class Question
