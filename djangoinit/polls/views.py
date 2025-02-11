@@ -1,4 +1,4 @@
-from django.db.models import F
+from django.db.models import F, Count
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.template import loader
 from django.urls import reverse
@@ -101,7 +101,12 @@ class IndexView(generic.ListView):
     context_object_name = "latest_questions_list"
 
     def get_queryset(self):
-        return Question.objects.filter(pub_date__lte=now()).order_by("-pub_date")[:10]
+        return (
+            Question.objects.annotate(num_choices=Count("choice"))
+            .filter(num_choices__gt=0)
+            .filter(pub_date__lte=now())
+            .order_by("-pub_date")[:10]
+        )
 
 
 class ShowView(generic.DetailView):
@@ -109,7 +114,11 @@ class ShowView(generic.DetailView):
     template_name = "polls/show.html"
 
     def get_queryset(self):
-        return Question.objects.filter(pub_date__lte=now())
+        return (
+            Question.objects.annotate(num_choices=Count("choice"))
+            .filter(num_choices__gt=0)
+            .filter(pub_date__lte=now())
+        )
 
 
 class ResultsView(generic.DetailView):
