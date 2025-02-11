@@ -1,15 +1,20 @@
 from django.test import TestCase
 from django.utils.timezone import now
 from django.urls import reverse
+from django.db.models import F
 
 from datetime import timedelta
 
-from .models import Question
+from .models import Question, Choice
 
 
 def create_question(question_text, days):
     time = now() + timedelta(days=days)
     return Question.objects.create(question_text=question_text, pub_date=time)
+
+
+def create_choice(choice_text, question):
+    return Choice.objects.create(choice_text=choice_text, question=question)
 
 
 # Create your tests here.
@@ -102,7 +107,9 @@ class QuestionResultsViewTests(TestCase):
 
     def test_question_with_result(self):
         result_question = create_question(question_text="Result question", days=-1)
-        # Todo: vote for the question here
+        choice_a = create_choice(choice_text="choice a", question=result_question)
+        choice_a.votes = F("votes") + 1
+        choice_a.save()
         url = reverse("polls:results", args=(result_question.id,))
         response = self.client.get(url)
         self.assertNotContains(response, "No vote")
