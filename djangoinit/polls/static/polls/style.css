@@ -1,0 +1,22 @@
+body {
+  background: black url("images/matrix-bg.webp") center;
+}
+
+ul {
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+}
+
+li {
+  list-style-type: none;
+}
+
+li:before {
+  content: '=> ';
+}
+
+li a {
+  color: green;
+  text-decoration: none;
+}
